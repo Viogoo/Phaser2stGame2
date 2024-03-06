@@ -1,13 +1,13 @@
 //Створюємо сцену
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1870,
+    height: 950,
     physics: {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: false,
         }
     },
     scene: {
@@ -31,62 +31,44 @@ function hitBomb(player, bomb) {
 
     gameOver = true;
 }
-//Функція збору зірок
-function collectStar(player, star) {
-    star.disableBody(true, true);
 
     score += 10;
-    scoreText.setText('Score: ' + score);
-
-    var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-    var bomb = bombs.create(x, 16, 'bomb');
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-
-    if (stars.countActive(true) === 0) {
-        stars.children.iterate(function (child) {
-
-            child.enableBody(true, child.x, 0, true, true);
-
-        });
 
 
-
-    }
-
-}
 
 
 function preload() {
     //Додаємо клавіші керування
     cursors = this.input.keyboard.createCursorKeys();
     //Завантажуємо спрайти
-    //this.load.image('sky', 'assets/sky.png');
-    this.load.image('ground', 'assets/platform.png');
+    this.load.image('sky', 'assets/sky.png');
+    this.load.image('ground', 'assets/1.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
-    this.load.spritesheet('dude',
-        'assets/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
-    );
+    this.load.spritesheet('dude','assets/2.png',{ frameWidth: 32, frameHeight: 48 } );
 }
 //Додаємо спрайти до сцени
-function create() {
+    function create() {
     //Платформи
-    this.add.image(400, 300, 'sky');
+    this.add.image(900, 400, 'sky');
     platforms = this.physics.add.staticGroup();
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
+    platforms.create(100, 920, 'ground').setScale(2).refreshBody();
+    platforms.create(900, 920, 'ground').setScale(2).refreshBody();
+    platforms.create(1700, 920, 'ground').setScale(2).refreshBody();
+ 
+
+
+
+
+
+
 
     //Гравець
-    player = this.physics.add.sprite(100, 450, 'dude');
+    player = this.physics.add.sprite(100, 700, 'dude');
 
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
+    player
+        .setBounce(0.2)
+        .setCollideWorldBounds(true);
     player.body.setGravityY(300)
 
     this.anims.create({
@@ -118,19 +100,10 @@ function create() {
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
 
-    stars = this.physics.add.group({
-        key: 'star',
 
-        repeat: 11,
-        setXY: { x: 12, y: 0, stepX: 70 }
+};
 
-    });
-
-    //SetScale(group.getChildren(), 2, 2, 1, 1)
-
-    this.physics.add.collider(stars, platforms);
-    this.physics.add.overlap(player, stars, collectStar, null, this);
-
+    
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
         child.setScale(2,2)
@@ -138,7 +111,7 @@ function create() {
 
     });
 
-}
+
 
 
 function update() {
@@ -164,17 +137,8 @@ function update() {
     }
 }
 
-function create () {
-    this.add.titleSprite(0, 0, worldWidth, 1080, "1700").setOrigin(0, 0);
 
-}
 
-platforms = this.physics.add.staticGroup();
-
-for (var x = 0; x < worldWidth; x = x + 450) {
-    console.log(x)
-    platforms.create(x, 1000, 'ground').setOrigin(0, 0). refreshBody();
-}
 
 
 
