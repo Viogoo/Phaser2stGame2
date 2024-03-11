@@ -7,7 +7,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false,
+            debug: true,
         }
     },
     scene: {
@@ -44,40 +44,62 @@ function preload() {
     this.load.image('ground', 'assets/1.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
+    this.load.image('tree', 'assets/3.png');
+    this.load.image('ts', 'assets/4.png');
     this.load.spritesheet('dude','assets/2.png',{ frameWidth: 32, frameHeight: 48 } );
 }
 //Додаємо спрайти до сцени
     function create() {
-    //Платформи
-  //this.add.image(900, 400, 'sky');
-    //platforms = this.physics.add.staticGroup();
-    //platforms.create(100, 920, 'ground').setScale(2).refreshBody();
-    //platforms.create(900, 920, 'ground').setScale(2).refreshBody();
-   //platforms.create(1700, 920, 'ground').setScale(2).refreshBody();
- 
-  
-    this.add.tileSprite(0, 0, worldWidth, 1080, "sky")
+   this.add.tileSprite(0, 0, worldWidth, 1080, "sky")
     .setOrigin (0, 0)
     .setScale (1)
     .setDepth (0);
 
   
  
-
+//додаємо генепвцію платформ
   platforms = this.physics.add.staticGroup();
 
   for (var x = 0; x < worldWidth; x = x + 128){
     platforms
     .create (x, 1050, "ground")
     .setOrigin (0, 0)
-    .refreshBody ();
-    
+    .refreshBody (1);
   }
+    
+ ts = this.physics.add.staticGroup();
+     
+    //додаємо могилу
+ for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(1700, 500)) {
 
 
+        ts 
+        .create(x, 1080 - 25, 'ts')
+        .setOrigin (0, 1)
+        .setScale (Phaser.Math.FloatBetween(0.5, 2))
+        .setDepth (Phaser.Math.Between(10));
+
+        console.log(ts.X, ts.Y)
+
+     }
+    
+    //додаємо дерево
+     tree = this.physics.add.staticGroup();
+     
+     for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(1500, 500)) {
 
 
+        tree 
+        .create(x, 1080 - 25, 'tree')
+        .setOrigin (0, 1)
+        .setScale (Phaser.Math.FloatBetween(0.5, 2))
+        .setDepth (Phaser.Math.Between(10));
 
+        console.log(tree.X, tree.Y)
+
+     }
+  
+  
     //Гравець
     player = this.physics.add.sprite(100, 700, 'dude');
 
@@ -122,18 +144,7 @@ function preload() {
 
 };
 
-    
-    //stars.children.iterate(function (child) {
-        //child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        //child.setScale(2,2)
-
-
-    //});
-
-
-
-
-function update() {
+    function update() {
     //Додаємо керування гравцем
     if (cursors.left.isDown) {
         player.setVelocityX(-400);
@@ -154,18 +165,4 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-520);
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    }
