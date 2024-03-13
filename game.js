@@ -17,17 +17,14 @@ var config = {
     }
 };
 
-
+//змінні
 var game = new Phaser.Game(config);
-//var cursors;
 var keyboard;
 var score = 0;
 var scoreText;
 var worldWidth = 9600;
-
-
-
-
+var yStep;
+var yStart;
 
 
 
@@ -37,6 +34,9 @@ function preload() {
     cursors = this.input.keyboard.createCursorKeys();
     //Завантажуємо спрайти
     this.load.image('sky', 'assets/sky.png');
+    this.load.image('platform1', 'assets/10.png');
+    this.load.image('platform2', 'assets/11.png');
+    this.load.image('platform3', 'assets/12.png');
     this.load.image('ground', 'assets/1.png');
     this.load.image('star', 'assets/star.png');
     this.load.image('bomb', 'assets/bomb.png');
@@ -63,6 +63,26 @@ function create() {
             .setOrigin(0, 0)
             .refreshBody(1);
     }
+
+
+
+    //летючі платформи
+
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
+        var yStep = Phaser.Math.Between(1, 3);
+        var y = yStart * yStep;
+
+        platforms.create(x, y, "10");
+
+        var i;
+        for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
+            platforms.create(x + 128 * i, y, "11");
+        }
+
+        platforms.create(x + 128 * i, y, "12");
+    }
+
+
     //додаємо кущі
 
 
@@ -94,7 +114,21 @@ function create() {
         console.log(tree.X, tree.Y)
 
     }
+    //летючі плвтформи
 
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
+        var yStep = Phaser.Math.Between(1, 3);
+        var y = yStart * yStep;
+
+        platforms.create(x, y, "10");
+
+        var i;
+        for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
+            platforms.create(x + 128 * i, y, "11");
+        }
+
+        platforms.create(x + 128 * i, y, "12");
+    }
 
 
     //Гравець
@@ -134,16 +168,23 @@ function create() {
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
+    //камера
     this.cameras.main.setBounds(0, 0, worldWidth, 1080);
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
 
     this.cameras.main.startFollow(player);
 
+
+
+
+
+
+
+
     //додаємо очки рахунку
     cursors = this.input.keyboard.createCursorKeys();
-    
-    //
+
+
     stars = this.physics.add.group({
         key: "star",
         reperat: 10,
@@ -160,10 +201,46 @@ function create() {
     }
 
     //Додаємо рахунок
-    scoreText = this.add.text(16, 16, "score 0 / 80", { fontSize: "32px", fill: "#100" }
-    )
-        .setScrollFactor(0);
-    
+
+    function showLife() {
+        var lifeLine = 'Life: '
+
+        for (var i = 0; i < lifeLine; i++) {
+            lifeLine += '❤️'
+
+        }
+        return lifeLine
+    }
+
+
+
+
+
+
+    scoreText = this.add.text(100, 100, 'score: 0', { fontSize: '40px', fill: '#FFF' })
+        .setOrigin(0, 0)
+        .setScrollFactor(0)
+
+
+    lifeText = this.add.text(1500, 100, showLife(), { fontSize: '40px', fill: '#FFF' })
+        .setOrigin(0, 0)
+        .setScrollFactor(0)
+
+
+
+
+
+    //var resetButton = this.add.text(400, 450, 'reset')
+
+    // .setInteractive()
+    // .setScrollFactor(0);
+
+    // resetButton.on('pointerdown', function () {
+    // console.log('restart')
+    //refereshBody ()
+    // });
+
+
     //життя
     livesText = this.add.text(1700, 16, "lives = 3", { fontSize: "32px", fill: "#000" }
     )
@@ -199,7 +276,7 @@ function collectStar(player, star) {
     star.disableBody(true, true);
 
     score += 10;
-    scoreText.setText("Score:" + score + " 0 / 80");
+    scoreText.setText("Score:" + score);
 }
 
 
@@ -220,3 +297,4 @@ function hitBomb(player, bomb) {
 
     gameOver = true;
 }
+
