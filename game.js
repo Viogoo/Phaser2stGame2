@@ -25,7 +25,8 @@ var scoreText;
 var worldWidth = 9600;
 var yStep;
 var yStart;
-
+var life = 5;
+var stars
 
 
 
@@ -38,7 +39,7 @@ function preload() {
     this.load.image('platform2', 'assets/11.png');
     this.load.image('platform3', 'assets/12.png');
     this.load.image('ground', 'assets/1.png');
-    this.load.image('star', 'assets/star.png');
+   
     this.load.image('bomb', 'assets/bomb.png');
     this.load.image('tree', 'assets/3.png');
     this.load.image('ts', 'assets/5.png');
@@ -68,19 +69,35 @@ function create() {
 
     //летючі платформи
 
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(3000, 800)) {
+       var yStep = Phaser.Math.Between(1, 3);
+       var y = yStart * yStep;
+
+        platforms.create(x, 900, 'platform1');
+
+        var i
+        for (var i = 1; i < Phaser.Math.Between(0, 5); i++) {
+            platforms.create(x + 128 * i, 900, 'platform2');
+        }
+
+        platforms.create(x + 128 * i, 900, 'platform3');
+   }
+
+   
+    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(1000, 800)) {
         var yStep = Phaser.Math.Between(1, 3);
         var y = yStart * yStep;
 
-        platforms.create(x, y, "10");
+        platforms.create(x, 700, 'platform1');
 
-        var i;
-        for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
-            platforms.create(x + 128 * i, y, "11");
+        var i
+        for (var i = 1; i < Phaser.Math.Between(0, 5); i++) {
+            platforms.create(x + 128 * i, 700, 'platform2');
         }
 
-        platforms.create(x + 128 * i, y, "12");
+        platforms.create(x + 128 * i, 700, 'platform3');
     }
+
 
 
     //додаємо кущі
@@ -113,21 +130,6 @@ function create() {
 
         console.log(tree.X, tree.Y)
 
-    }
-    //летючі плвтформи
-
-    for (var x = 0; x < worldWidth; x = x + Phaser.Math.FloatBetween(400, 500)) {
-        var yStep = Phaser.Math.Between(1, 3);
-        var y = yStart * yStep;
-
-        platforms.create(x, y, "10");
-
-        var i;
-        for (i = 1; i < Phaser.Math.Between(0, 5); i++) {
-            platforms.create(x + 128 * i, y, "11");
-        }
-
-        platforms.create(x + 128 * i, y, "12");
     }
 
 
@@ -184,20 +186,30 @@ function create() {
     //додаємо очки рахунку
     cursors = this.input.keyboard.createCursorKeys();
 
+   
 
     stars = this.physics.add.group({
-        key: "star",
-        reperat: 10,
-        setXY: { x: Phaser.Math.FloatBetween(700, 1000), y: 0, stepX: Phaser.Math.FloatBetween(900, 1500) },
+        key: 'star',
+
+        repeat: 50,
+        setXY: { x: 12, y: 0, stepX: 500 }
+
     });
 
-    stars.children.iterate(function (child) {
+       stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
     });
+
+
+
     this.physics.add.collider(stars, platforms);
     this.physics.add.overlap(player, stars, collectStar, null, this);
     function collectStar(player, star) {
         star.disableBody(true, true);
+        score += 10;
+        scoreText.setText('Score: ' + score);
+    
+
     }
 
     //Додаємо рахунок
@@ -205,7 +217,7 @@ function create() {
     function showLife() {
         var lifeLine = 'Life: '
 
-        for (var i = 0; i < lifeLine; i++) {
+        for (var i = 0; i < life; i++) {
             lifeLine += '❤️'
 
         }
@@ -228,11 +240,11 @@ function create() {
 
 
 
-
+//функція рестарт
 
     //var resetButton = this.add.text(400, 450, 'reset')
 
-    // .setInteractive()
+    //.setInteractive()
     // .setScrollFactor(0);
 
     // resetButton.on('pointerdown', function () {
