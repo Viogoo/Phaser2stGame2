@@ -6,7 +6,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 170 },
             debug: false,
         }
     },
@@ -28,7 +28,6 @@ var yStart;
 var life = 5;
 var stars
 var screenCount = 2
-var worldWidth = config.width * screenCount
 var enemyCount = screenCount
 
 
@@ -76,14 +75,14 @@ function create() {
        var yStep = Phaser.Math.Between(1, 3);
        var y = yStart * yStep;
 
-        platforms.create(x, 900, 'platform1');
+        platforms.create(x, 850, 'platform1');
 
         var i
         for (var i = 1; i < Phaser.Math.Between(0, 5); i++) {
-            platforms.create(x + 128 * i, 900, 'platform2');
+            platforms.create(x + 128 * i, 850, 'platform2');
         }
 
-        platforms.create(x + 128 * i, 900, 'platform3');
+        platforms.create(x + 128 * i, 850, 'platform3');
    }
 
    
@@ -91,14 +90,14 @@ function create() {
         var yStep = Phaser.Math.Between(1, 3);
         var y = yStart * yStep;
 
-        platforms.create(x, 700, 'platform1');
+        platforms.create(x, 650, 'platform1');
 
         var i
         for (var i = 1; i < Phaser.Math.Between(0, 5); i++) {
-            platforms.create(x + 128 * i, 700, 'platform2');
+            platforms.create(x + 128 * i, 650, 'platform2');
         }
 
-        platforms.create(x + 128 * i, 700, 'platform3');
+        platforms.create(x + 128 * i, 650, 'platform3');
     }
 
 
@@ -182,35 +181,14 @@ function create() {
 
 
 
-    //додаємо ворогів випадковим чином
-    function create() {
-       enemy = this.physics.add.group ({
-        key: 'enemy',
-        repeat: enemyCount,
-        setXY: {x: 1000, y: 1080 - 150, stepY: 400 }
-       }) ;
-
-       enemy.children.iterate(function (child) {
-        child
-        .setCollideWorldBounds(true)
-        .setVelocityX(Phaser.Math.FloatBetweenBetween(-200, 200))
-       });
-    };
-   //кількість ворогів
-    //enemyText = this.add.text(300, 50, showTextSymbols('🧟‍♂️', enemyCount), {fontSize: '40px', fill: '#FFF' })
-   //.setOrigin(0, 0)
-   // .setScrollFactor(0)
-
-   function showLife() {
-    var enemyText = 'enemy '
-
-    for (var i = 0; i < life; i++) {
-        lifeLine += ' 🧟‍♂️ '
-
-    }
-    return lifeLine
-}
-
+   
+   
+   
+    //кількість ворогів
+  
+   scoreText = this.add.text(1500, 150, 'enemy:', { fontSize: '40px', fill: '#FFF' })
+        .setOrigin(0, 0)
+        .setScrollFactor(0)
 
 
 
@@ -276,16 +254,19 @@ function create() {
 
 
 //функція рестарт
+function refereshBody(){
+    console.log('Game Over')
+    lacation.reload()   
+}
+  var resetButton = this.add.text(938, 70, '♻️', { fontSize: '60px', fill: '#FFF' })
 
-    //var resetButton = this.add.text(400, 450, 'reset')
+    .setInteractive()
+     .setScrollFactor(0);
 
-    //.setInteractive()
-    // .setScrollFactor(0);
-
-    // resetButton.on('pointerdown', function () {
-    // console.log('restart')
-    //refereshBody ()
-    // });
+    resetButton.on('pointerdown', function () {
+        console.log('restart')
+    refereshBody ()
+    });
 
 
     //життя
@@ -345,3 +326,17 @@ function hitBomb(player, bomb) {
     gameOver = true;
 }
 
+  //додаємо ворогів випадковим чином
+//   function create() {
+//     enemy = this.physics.add.group ({
+//      key: 'enemy',
+//      repeat: enemyCount,
+//      setXY: {x: 1000, y: 1080 - 150, stepY: 400 }
+//     }) ;
+
+//     enemy.children.iterate(function (child) {
+//      child
+//      .setCollideWorldBounds(true)
+//      .setVelocityX(Phaser.Math.FloatBetween(-200, 200))
+//     });
+//  };
