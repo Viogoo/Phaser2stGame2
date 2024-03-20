@@ -27,7 +27,9 @@ var yStep;
 var yStart;
 var life = 5;
 var stars
-
+var screenCount = 2
+var worldWidth = config.width * screenCount
+var enemyCount = screenCount
 
 
 function preload() {
@@ -44,6 +46,7 @@ function preload() {
     this.load.image('tree', 'assets/3.png');
     this.load.image('ts', 'assets/5.png');
     this.load.image('star', 'assets/star.png');
+    this.load.image('enemy', 'assets/enemy.png',); 
     this.load.spritesheet('dude', 'assets/2.png', { frameWidth: 32, frameHeight: 48 });
 }
 //Додаємо спрайти до сцени
@@ -179,6 +182,38 @@ function create() {
 
 
 
+    //додаємо ворогів випадковим чином
+    function create() {
+       enemy = this.physics.add.group ({
+        key: 'enemy',
+        repeat: enemyCount,
+        setXY: {x: 1000, y: 1080 - 150, stepY: 400 }
+       }) ;
+
+       enemy.children.iterate(function (child) {
+        child
+        .setCollideWorldBounds(true)
+        .setVelocityX(Phaser.Math.FloatBetweenBetween(-200, 200))
+       });
+    };
+   //кількість ворогів
+    //enemyText = this.add.text(300, 50, showTextSymbols('🧟‍♂️', enemyCount), {fontSize: '40px', fill: '#FFF' })
+   //.setOrigin(0, 0)
+   // .setScrollFactor(0)
+
+   function showLife() {
+    var enemyText = 'enemy '
+
+    for (var i = 0; i < life; i++) {
+        lifeLine += ' 🧟‍♂️ '
+
+    }
+    return lifeLine
+}
+
+
+
+
 
 
 
@@ -264,12 +299,12 @@ function create() {
 function update() {
     //Додаємо керування гравцем
     if (cursors.left.isDown) {
-        player.setVelocityX(-1000);
+        player.setVelocityX(-500);
 
         player.anims.play('left', true);
     }
     else if (cursors.right.isDown) {
-        player.setVelocityX(1000);
+        player.setVelocityX(500);
 
         player.anims.play('right', true);
     }
