@@ -29,7 +29,7 @@ var life = 5;
 var stars
 var screenCount = 2
 var enemyCount = screenCount
-
+var enemy
 
 function preload() {
     //Додаємо клавіші керування
@@ -172,6 +172,9 @@ function create() {
     this.physics.add.collider(player, bombs, hitBomb, null, this);
 
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    
+    
+    
     //камера
     this.cameras.main.setBounds(0, 0, worldWidth, 1080);
     this.physics.world.setBounds(0, 0, worldWidth, 1080);
@@ -252,12 +255,13 @@ function create() {
         .setScrollFactor(0)
 
 
-
-//функція рестарт
-function refereshBody(){
-    console.log('Game Over')
-    lacation.reload()   
+ //функція рестарт
+function refereshBody() {
+    console.log('Game Over');
+    location.reload(); // Виправлено орфографічну помилку
 }
+
+
   var resetButton = this.add.text(938, 70, '♻️', { fontSize: '60px', fill: '#FFF' })
 
     .setInteractive()
@@ -269,10 +273,31 @@ function refereshBody(){
     });
 
 
+   
+   
+   
     //життя
     livesText = this.add.text(1700, 16, "lives = 3", { fontSize: "32px", fill: "#000" }
     )
         .setScrollFactor(0);
+
+ // додаємо ворога
+ enemy = this.physics.add.sprite(1000, 1080 - 150, 'enemy');
+    
+
+ 
+
+
+
+
+// додаємо колізію між гравцем та ворогом
+this.physics.add.collider(enemy, platforms); // додаємо колізію між ворогом і платформами
+this.physics.add.collider(player, enemy, hitEnemy, null, this); // додаємо колізію між гравцем і ворогом
+
+// // додаємо колізію між гравцем та ворогом, але вимикаємо реакцію на зіткнення
+// this.physics.add.collider(player, enemy, null, function(player, enemy) {
+//     return false;
+// }, this);
 
 
 };
@@ -298,7 +323,41 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(-520);
     }
+
+
+ // Додаємо керування гравцем
+ if (cursors.left.isDown) {
+    player.setVelocityX(-500);
+    player.anims.play('left', true);
+} else if (cursors.right.isDown) {
+    player.setVelocityX(500);
+    player.anims.play('right', true);
+} else {
+    player.setVelocityX(0);
+    player.anims.play('turn');
 }
+
+if (cursors.up.isDown && player.body.touching.down) {
+    player.setVelocityY(-520);
+}
+
+// Перевіряємо зіткнення гравця з ворогом
+if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), enemy.getBounds())) {
+    // Виконуємо дії при зіткненні, наприклад, встановлюємо швидкість гравця на 0
+    player.setVelocityX(0);
+}
+}
+
+
+  // дії, які відбуваються при зіткненні гравця з ворогом
+function hitEnemy(player, enemy) {
+        player.setVelocityX(Phaser.Math.FloatBetween(-200, 200)); // Встановлюємо випадкову горизонтальну швидкість для гравця
+        player.setVelocityY(-100); // Задаємо невелике відштовхування вгору для гравця
+    }
+   
+
+
+
 
 function collectStar(player, star) {
     star.disableBody(true, true);
@@ -325,18 +384,3 @@ function hitBomb(player, bomb) {
 
     gameOver = true;
 }
-
-  //додаємо ворогів випадковим чином
-//   function create() {
-//     enemy = this.physics.add.group ({
-//      key: 'enemy',
-//      repeat: enemyCount,
-//      setXY: {x: 1000, y: 1080 - 150, stepY: 400 }
-//     }) ;
-
-//     enemy.children.iterate(function (child) {
-//      child
-//      .setCollideWorldBounds(true)
-//      .setVelocityX(Phaser.Math.FloatBetween(-200, 200))
-//     });
-//  };
